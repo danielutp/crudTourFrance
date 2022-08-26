@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api")
 @RestController
 public class CountryController {
-
     @Autowired
     private CountryService countryService;
 

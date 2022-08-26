@@ -32,13 +32,13 @@ public class Team {
     /**
      * Nombre del equipo
      */
-    @Column(name = "name", nullable = false, length = 100)
+    @Column(name = "name", nullable = false, length = 100,unique = true)
     private String name;
 
     /**
      * Código abreviado único
      */
-    @Column(name = "code", nullable = false, length = 30)
+    @Column(name = "code", nullable = false, length = 30, unique = true)
     private String code;
 
     /**

@@ -2,6 +2,7 @@ package com.co.sofka.controller;
 
 import com.co.sofka.domain.Cyclist;
 import com.co.sofka.domain.Team;
+import com.co.sofka.repository.TeamRepository;
 import com.co.sofka.service.CyclistService;
 import com.co.sofka.utility.Response;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +10,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Optional;
+import java.util.Set;
+
 @RequestMapping("/api")
 @RestController
 public class CyclistController {
+
+    private TeamRepository teamRepository;
     @Autowired
     private CyclistService cyclistService;
 
@@ -31,8 +37,15 @@ public class CyclistController {
 
     @PostMapping(path = "/cyclist")
     public ResponseEntity<Response> createCyclist(@RequestBody Cyclist cyclist) {
-        response.data = cyclistService.createCyclist(cyclist);
-        httpStatus = HttpStatus.CREATED;
+        Long idTeam = cyclist.getTeam().getId();
+        Optional<Team> team = teamRepository.findById(idTeam);
+        if (team.isPresent()&& team.get().getCyclists().size()<8){
+            response.data = cyclistService.createCyclist(cyclist);
+            httpStatus = HttpStatus.CREATED;
+            return new ResponseEntity(response, httpStatus);
+        }
+        response.message = "No cumple con las condiciones para crear un ciclista porque tiene mas de 8 ciclistas o no existe";
+        httpStatus = HttpStatus.NOT_ACCEPTABLE;
         return new ResponseEntity(response, httpStatus);
     }
 
